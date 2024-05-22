@@ -1,4 +1,3 @@
-from tools.fid_score import calculate_fid_given_paths
 import ml_collections
 import torch
 from torch import multiprocessing as mp
@@ -12,6 +11,7 @@ from absl import logging
 import builtins
 import einops
 import libs.autoencoder
+from tools.fid_score import calculate_fid_given_paths
 
 
 def stable_diffusion_beta_schedule(linear_start=0.00085, linear_end=0.0120, n_timestep=1000):
@@ -116,11 +116,12 @@ def evaluate(config):
         return dpm_solver_sample(_n_samples, config.sample.sample_steps, context=_context)
 
     with tempfile.TemporaryDirectory() as temp_path:
-        path = config.sample.path or temp_path
-        if accelerator.is_main_process:
-            os.makedirs(path, exist_ok=True)
-        logging.info(f'Samples are saved in {path}')
-        utils.sample2dir(accelerator, path, config.sample.n_samples, config.sample.mini_batch_size, sample_fn, dataset.unpreprocess)
+        directory_path = os.path.dirname(config.nnet_path)
+        path = os.path.join(directory_path, f'eval_samples_{int(config.sample.scale)}')
+        # if accelerator.is_main_process:
+        #     os.makedirs(path, exist_ok=True)
+        # logging.info(f'Samples are saved in {path}')
+        # utils.sample2dir(accelerator, path, config.sample.n_samples, config.sample.mini_batch_size, sample_fn, dataset.unpreprocess)
         if accelerator.is_main_process:
             fid = calculate_fid_given_paths((dataset.fid_stat, path))
             logging.info(f'nnet_path={config.nnet_path}, fid={fid}')

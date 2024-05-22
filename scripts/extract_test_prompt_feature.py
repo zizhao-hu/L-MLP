@@ -1,11 +1,14 @@
 import torch
 import os
+import sys
+sys.path.append(os.getcwd())
 import numpy as np
 import libs.autoencoder
 import libs.clip
 from datasets import MSCOCODatabase
 import argparse
 from tqdm import tqdm
+import pickle
 
 
 def main():
@@ -29,11 +32,13 @@ def main():
     clip.eval()
     clip.to(device)
 
-    save_dir = f'assets/datasets/coco256_features/run_vis'
+    save_dir = f'../../data/coco/coco256_features/run_vis'
     latent = clip.encode(prompts)
     for i in range(len(latent)):
         c = latent[i].detach().cpu().numpy()
-        np.save(os.path.join(save_dir, f'{i}.npy'), (prompts[i], c))
+        with open(os.path.join(save_dir, f'{i}.pkl'), 'wb') as f:
+            pickle.dump((prompts[i], c), f)
+
 
 
 if __name__ == '__main__':

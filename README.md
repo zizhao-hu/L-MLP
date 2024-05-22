@@ -1,34 +1,11 @@
-## U-ViT<br> <sub><small>Official PyTorch implementation of [All are Worth Words: A ViT Backbone for Diffusion Models](https://arxiv.org/abs/2209.12152) (CVPR 2023)</small></sub>
+## L-MLP <br> <sub><small>Official PyTorch implementation of [Lateralization MLP: A Simple Brain-inspired
+Architecture for Diffusion]</small></sub>
 
-
-💡Projects with U-ViT: 
-* [UniDiffuser](https://github.com/thu-ml/unidiffuser), a multi-modal large-scale diffusion model based on a 1B U-ViT, is open-sourced
-* [DPT](https://arxiv.org/abs/2302.10586), [code](https://github.com/ML-GSAI/DPT), [demo](https://ml-gsai.github.io/DPT-demo) a conditional diffusion model trained with 1 label/class with SOTA SSL generation and classification results on ImageNet
-
-<img src="uvit.png" alt="drawing" width="400"/>
-
-Vision transformers (ViT) have shown promise in various vision tasks while the U-Net based on a convolutional neural network (CNN) remains dominant in diffusion models. 
-We design a simple and general ViT-based architecture (named U-ViT) for image generation with diffusion models. 
-U-ViT is characterized by treating all inputs including the time, condition and noisy image patches as tokens 
-and employing long skip connections between shallow and deep layers. 
-We evaluate U-ViT in unconditional and class-conditional image generation, 
-as well as text-to-image generation tasks, where U-ViT is comparable if not superior to a CNN-based U-Net of a similar size. 
-In particular, latent diffusion models with U-ViT achieve record-breaking FID scores of 2.29 in class-conditional image generation 
-on ImageNet 256x256, and 5.48 in text-to-image generation on MS-COCO, among methods without accessing 
-large external datasets during the training of generative models.
-
-Our results suggest that, for diffusion-based image modeling, the long skip connection is crucial while the down-sampling and up-sampling operators in CNN-based U-Net are not always necessary. We believe that U-ViT can provide insights for future research on backbones in diffusion models and benefit generative modeling on large scale cross-modality datasets.
+The Transformer architecture has dominated machine learning in a wide range of tasks. The specific characteristic of this architecture is an expensive scaled dot-product attention mechanism that models the inter-token interactions, which is known to be the reason behind its success. However, such a mechanism does not have a direct parallel to the human brain which brings the question if the scaled-dot product is necessary for intelligence with strong expressive power. Inspired by the lateralization of the human brain, we propose a new simple but effective architecture called the Lateralization MLP (L-MLP). Stacking L-MLP blocks can generate complex architectures. Each L-MLP block is based on a multi-layer perceptron (MLP) that permutes data dimensions, processes each dimension in parallel, merges them, and finally passes through a joint MLP. We discover that this specific design outperforms other MLP variants and performs comparably to a transformer-based architecture in the challenging diffusion task while being highly efficient. We conduct experiments using text-to-image generation tasks  to demonstrate the effectiveness and efficiency of  L-MLP. Further, we look into the model behavior and discover a connection to the function of the human brain.
 
 --------------------
 
-
-
-This codebase implements the transformer-based backbone 📌*U-ViT*📌 for diffusion models, as introduced in the [paper](https://arxiv.org/abs/2209.12152).
-U-ViT treats all inputs as tokens and employs long skip connections. *The long skip connections grealy promote the performance and the convergence speed*.
-
-
-
-<img src="skip_im.png" alt="drawing" width="400"/>
+This codebase implements the L-MLP for diffusion models. Special thanks to U-ViT.
 
 
 💡This codebase contains:

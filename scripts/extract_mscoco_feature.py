@@ -1,12 +1,16 @@
 import torch
 import os
+import sys
+sys.path.append(os.getcwd())
 import numpy as np
 import libs.autoencoder
 import libs.clip
 from datasets import MSCOCODatabase
 import argparse
 from tqdm import tqdm
-
+import sys 
+cwd = os.getcwd()
+sys.path.append(cwd)
 
 def main(resolution=256):
     parser = argparse.ArgumentParser()
@@ -16,22 +20,22 @@ def main(resolution=256):
 
 
     if args.split == "train":
-        datas = MSCOCODatabase(root='assets/datasets/coco/train2014',
-                             annFile='assets/datasets/coco/annotations/captions_train2014.json',
+        datas = MSCOCODatabase(root='../../data/coco/train2014',
+                             annFile='../../data/coco/annotations/captions_train2014.json',
                              size=resolution)
-        save_dir = f'assets/datasets/coco{resolution}_features/train'
+        save_dir = f'../../data/coco/coco256_features/train'
     elif args.split == "val":
-        datas = MSCOCODatabase(root='assets/datasets/coco/val2014',
-                             annFile='assets/datasets/coco/annotations/captions_val2014.json',
+        datas = MSCOCODatabase(root='../../data/coco/val2014',
+                             annFile='../../data/coco/annotations/captions_val2014.json',
                              size=resolution)
-        save_dir = f'assets/datasets/coco{resolution}_features/val'
+        save_dir = f'../../data/coco/coco256_features/val'
     else:
         raise NotImplementedError("ERROR!")
 
     device = "cuda"
     os.makedirs(save_dir)
 
-    autoencoder = libs.autoencoder.get_model('assets/stable-diffusion/autoencoder_kl.pth')
+    autoencoder = libs.autoencoder.get_model('../../data/stable-diffusion/autoencoder_kl.pth')
     autoencoder.to(device)
     clip = libs.clip.FrozenCLIPEmbedder()
     clip.eval()

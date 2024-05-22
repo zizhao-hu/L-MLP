@@ -1,11 +1,9 @@
-import torch
 import os
+import sys
+sys.path.append(os.getcwd())
 import numpy as np
 import libs.autoencoder
 import libs.clip
-from datasets import MSCOCODatabase
-import argparse
-from tqdm import tqdm
 
 
 def main():
@@ -18,7 +16,7 @@ def main():
     clip.eval()
     clip.to(device)
 
-    save_dir = f'assets/datasets/coco256_features'
+    save_dir = f'../../data/coco/coco256_features'
     latent = clip.encode(prompts)
     print(latent.shape)
     c = latent[0].detach().cpu().numpy()

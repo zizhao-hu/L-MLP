@@ -30,6 +30,9 @@ def get_nnet(name, **kwargs):
     elif name == 'uvit_t2i':
         from libs.uvit_t2i import UViT
         return UViT(**kwargs)
+    elif 'f2' in name:
+        from libs.f2 import ULMLP
+        return ULMLP(**kwargs)
     else:
         raise NotImplementedError(name)
 

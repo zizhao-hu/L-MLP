@@ -11,7 +11,6 @@ import glob
 import einops
 import torchvision.transforms.functional as F
 
-
 class UnlabeledDataset(Dataset):
     def __init__(self, dataset):
         self.dataset = dataset
@@ -144,7 +143,7 @@ class CIFAR10(DatasetFactory):
 
     @property
     def fid_stat(self):
-        return 'assets/fid_stats/fid_stats_cifar10_train_pytorch.npz'
+        return '../../data/fid_stats/fid_stats_cifar10_train_pytorch.npz'
 
     def sample_label(self, n_samples, device):
         return torch.multinomial(self.cnt, n_samples, replacement=True).to(device)
@@ -191,7 +190,7 @@ class ImageNet256Features(DatasetFactory):  # the moments calculated by Stable D
 
     @property
     def fid_stat(self):
-        return f'assets/fid_stats/fid_stats_imagenet256_guided_diffusion.npz'
+        return f'../../data/fid_stats/fid_stats_imagenet256_guided_diffusion.npz'
 
     def sample_label(self, n_samples, device):
         return torch.randint(0, 1000, (n_samples,), device=device)
@@ -216,7 +215,7 @@ class ImageNet512Features(DatasetFactory):  # the moments calculated by Stable D
 
     @property
     def fid_stat(self):
-        return f'assets/fid_stats/fid_stats_imagenet512_guided_diffusion.npz'
+        return f'../../data/fid_stats/fid_stats_imagenet512_guided_diffusion.npz'
 
     def sample_label(self, n_samples, device):
         return torch.randint(0, 1000, (n_samples,), device=device)
@@ -252,7 +251,7 @@ class ImageNet(DatasetFactory):
 
     @property
     def fid_stat(self):
-        return f'assets/fid_stats/fid_stats_imagenet{self.resolution}_guided_diffusion.npz'
+        return f'../../data/fid_stats/fid_stats_imagenet{self.resolution}_guided_diffusion.npz'
 
     def sample_label(self, n_samples, device):
         return torch.multinomial(self.cnt, n_samples, replacement=True).to(device)
@@ -406,7 +405,7 @@ class CelebA(DatasetFactory):
 
     @property
     def fid_stat(self):
-        return 'assets/fid_stats/fid_stats_celeba64_train_50000_ddim.npz'
+        return '../../data/fid_stats/fid_stats_celeba64_train_50000_ddim.npz'
 
     @property
     def has_label(self):
@@ -525,7 +524,7 @@ class MSCOCO256Features(DatasetFactory):  # the moments calculated by Stable Dif
 
     @property
     def fid_stat(self):
-        return f'assets/fid_stats/fid_stats_mscoco256_val.npz'
+        return f'../../data/fid_stats/fid_stats_mscoco256_val.npz'
 
 
 def get_dataset(name, **kwargs):

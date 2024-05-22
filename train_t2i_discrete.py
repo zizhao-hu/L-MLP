@@ -15,7 +15,7 @@ from tools.fid_score import calculate_fid_given_paths
 from absl import logging
 import builtins
 import os
-import wandb
+# import wandb
 import libs.autoencoder
 import numpy as np
 
@@ -92,6 +92,7 @@ def LSimple(x0, nnet, schedule, **kwargs):
 
 
 def train(config):
+    torch.cuda.empty_cache()
     if config.get('benchmark', False):
         torch.backends.cudnn.benchmark = True
         torch.backends.cudnn.deterministic = False
@@ -113,8 +114,8 @@ def train(config):
         os.makedirs(config.sample_dir, exist_ok=True)
     accelerator.wait_for_everyone()
     if accelerator.is_main_process:
-        wandb.init(dir=os.path.abspath(config.workdir), project=f'uvit_{config.dataset.name}', config=config.to_dict(),
-                   name=config.hparams, job_type='train', mode='offline')
+        # wandb.init(dir=os.path.abspath(config.workdir), project=f'uvit_{config.dataset.name}', config=config.to_dict(),
+        #            name=config.hparams, job_type='train', mode='offline')
         utils.set_logger(log_level='info', fname=os.path.join(config.workdir, 'output.log'))
         logging.info(config)
     else:
@@ -220,7 +221,7 @@ def train(config):
                 logging.info(f'step={train_state.step} fid{n_samples}={_fid}')
                 with open(os.path.join(config.workdir, 'eval.log'), 'a') as f:
                     print(f'step={train_state.step} fid{n_samples}={_fid}', file=f)
-                wandb.log({f'fid{n_samples}': _fid}, step=train_state.step)
+                # wandb.log({f'fid{n_samples}': _fid}, step=train_state.step)
             _fid = torch.tensor(_fid, device=device)
             _fid = accelerator.reduce(_fid, reduction='sum')
 
@@ -238,7 +239,7 @@ def train(config):
         if accelerator.is_main_process and train_state.step % config.train.log_interval == 0:
             logging.info(utils.dct2str(dict(step=train_state.step, **metrics)))
             logging.info(config.workdir)
-            wandb.log(metrics, step=train_state.step)
+            # wandb.log(metrics, step=train_state.step)
 
         if accelerator.is_main_process and train_state.step % config.train.eval_interval == 0:
             torch.cuda.empty_cache()
@@ -247,7 +248,7 @@ def train(config):
             samples = dpm_solver_sample(_n_samples=2 * 5, _sample_steps=50, context=contexts)
             samples = make_grid(dataset.unpreprocess(samples), 5)
             save_image(samples, os.path.join(config.sample_dir, f'{train_state.step}.png'))
-            wandb.log({'samples': wandb.Image(samples)}, step=train_state.step)
+            # wandb.log({'samples': wandb.Image(samples)}, step=train_state.step)
             torch.cuda.empty_cache()
         accelerator.wait_for_everyone()
 
@@ -257,8 +258,8 @@ def train(config):
             if accelerator.local_process_index == 0:
                 train_state.save(os.path.join(config.ckpt_root, f'{train_state.step}.ckpt'))
             accelerator.wait_for_everyone()
-            fid = eval_step(n_samples=10000, sample_steps=50)  # calculate fid of the saved checkpoint
-            step_fid.append((train_state.step, fid))
+            # fid = eval_step(n_samples=10000, sample_steps=50)  # calculate fid of the saved checkpoint
+            # step_fid.append((train_state.step, fid))
             torch.cuda.empty_cache()
         accelerator.wait_for_everyone()
 

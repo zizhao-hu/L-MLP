@@ -33,6 +33,7 @@ limitations under the License.
 """
 import os
 import pathlib
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 import numpy as np
 import torch

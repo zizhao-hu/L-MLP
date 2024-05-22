@@ -1,0 +1,5 @@
+# Ignore everything in the assets directory
+assets/
+
+# Ignore everything in the workdir directory
+workdir/

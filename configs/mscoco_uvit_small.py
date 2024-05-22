@@ -9,17 +9,17 @@ def d(**kwargs):
 def get_config():
     config = ml_collections.ConfigDict()
 
-    config.seed = 1234
+    config.seed = 4234
     config.z_shape = (4, 32, 32)
 
     config.autoencoder = d(
-        pretrained_path='assets/stable-diffusion/autoencoder_kl.pth',
+        pretrained_path='../../data/stable-diffusion/autoencoder_kl.pth',
         scale_factor=0.23010
     )
 
     config.train = d(
         n_steps=1000000,
-        batch_size=256,
+        batch_size=128,
         log_interval=10,
         eval_interval=5000,
         save_interval=50000,
@@ -54,7 +54,7 @@ def get_config():
 
     config.dataset = d(
         name='mscoco256_features',
-        path='assets/datasets/coco256_features',
+        path='../../data/coco/coco256_features',
         cfg=True,
         p_uncond=0.1
     )
@@ -64,7 +64,7 @@ def get_config():
         n_samples=30000,
         mini_batch_size=50,
         cfg=True,
-        scale=1.,
+        scale=7.,
         path=''
     )
 

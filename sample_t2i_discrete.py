@@ -1,3 +1,5 @@
+import os
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 import ml_collections
 import torch
 from torch import multiprocessing as mp
@@ -11,7 +13,11 @@ import einops
 import libs.autoencoder
 import libs.clip
 from torchvision.utils import save_image
-
+import torchvision.utils as vutils
+from torchvision.transforms import ToPILImage
+import seaborn as sns
+import matplotlib.pyplot as plt
+from torch.utils.data import DataLoader
 
 def stable_diffusion_beta_schedule(linear_start=0.00085, linear_end=0.0120, n_timestep=1000):
     _betas = (
@@ -26,9 +32,14 @@ def evaluate(config):
         torch.backends.cudnn.deterministic = False
 
     mp.set_start_method('spawn')
+    torch.cuda.set_per_process_memory_fraction(0.5, 0)  # Adjust as per your specific needs
+    torch.cuda.empty_cache()
+
+
     accelerator = accelerate.Accelerator()
     device = accelerator.device
     accelerate.utils.set_seed(config.seed, device_specific=True)
+    
     logging.info(f'Process {accelerator.process_index} using device: {device}')
 
     config.mixed_precision = accelerator.mixed_precision
@@ -41,22 +52,37 @@ def evaluate(config):
 
     dataset = get_dataset(**config.dataset)
 
-    with open(config.input_path, 'r') as f:
-        prompts = f.read().strip().split('\n')
+    # with open(config.input_path, 'r') as f:
+    #     prompts = f.read().strip().split('\n')
 
-    print(prompts)
+    # print(prompts)
 
-    clip = libs.clip.FrozenCLIPEmbedder()
-    clip.eval()
-    clip.to(device)
+    # clip = libs.clip.FrozenCLIPEmbedder()
+    # clip.eval()
+    # clip.to(device)
 
-    contexts = clip.encode(prompts)
+    # contexts = clip.encode(prompts)
+
+    test_dataset = dataset.get_split(split='test', labeled=True)  # for sampling
+    test_dataset_loader = DataLoader(test_dataset, batch_size=12, shuffle=False,
+                                     drop_last=True, num_workers=1, pin_memory=True, persistent_workers=True)
+    
+
 
     nnet = utils.get_nnet(**config.nnet)
-    nnet = accelerator.prepare(nnet)
+    nnet, test_dataset_loader = accelerator.prepare(nnet, test_dataset_loader)
     logging.info(f'load nnet from {config.nnet_path}')
     accelerator.unwrap_model(nnet).load_state_dict(torch.load(config.nnet_path, map_location='cpu'))
     nnet.eval()
+
+    def get_context_generator():
+        while True:
+            for data in test_dataset_loader:
+                _, _context = data
+                yield _context
+
+    context_generator = get_context_generator()
+    contexts = next(context_generator)
 
     def cfg_nnet(x, timesteps, context):
         _cond = nnet(x, timesteps, context=context)
@@ -97,8 +123,16 @@ def evaluate(config):
     samples = dataset.unpreprocess(decode(z))
 
     os.makedirs(config.output_path, exist_ok=True)
-    for sample, prompt in zip(samples, prompts):
-        save_image(sample, os.path.join(config.output_path, f"{prompt}.png"))
+    # for sample, prompt in zip(samples, prompts):
+    #     save_image(sample, os.path.join(config.output_path, f"{prompt}.png"))
+    grid = vutils.make_grid(samples, nrow=4, padding=2, normalize=True)
+
+    # Convert the grid tensor to a PIL image
+    to_pil = ToPILImage()
+    grid_image = to_pil(grid)
+
+    # Save the grid image
+    grid_image.save(os.path.join(config.output_path, "image_grid.png"))
 
 
 
