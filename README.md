@@ -70,9 +70,8 @@ accelerate launch --num_processes $num_processes --mixed_precision fp16 eval_scr
 
 We provide all commands to reproduce FID results in the paper:
 ```sh
-# MS-COCO (U-ViT-S/2)
-accelerate launch --num_processes 1 --mixed_precision fp16 eval_t2i_discrete.py --config=configs/mscoco_uvit_small.py --nnet_path=mscoco_uvit_small.pth
-accelerate launch --num_processes 1 --mixed_precision fp16 eval_t2i_discrete.py --config=configs/lmlp_f2.py --nnet_path=.\workdir\lmlp_f2\default\ckpts\2000000.ckpt\nnet_ema.pth
+# MS-COCO (U-MLP)
+accelerate launch --num_processes 1 --mixed_precision fp16 eval_t2i_discrete.py --config=configs/lmlp_f2.py --nnet_path=nnet_ema.pth
 ```
 
 ## References
