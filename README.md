@@ -73,21 +73,12 @@ We provide all commands to reproduce FID results in the paper:
 # MS-COCO (U-ViT-S/2)
 accelerate launch --num_processes 1 --mixed_precision fp16 eval_t2i_discrete.py --config=configs/mscoco_uvit_small.py --nnet_path=mscoco_uvit_small.pth
 accelerate launch --num_processes 1 --mixed_precision fp16 eval_t2i_discrete.py --config=configs/lmlp_f2.py --nnet_path=.\workdir\lmlp_f2\default\ckpts\2000000.ckpt\nnet_ema.pth
-
-
-## References
-If you find the code useful for your research, please consider citing
-```bib
-@inproceedings{bao2022all,
-  title={All are Worth Words: A ViT Backbone for Diffusion Models},
-  author={Bao, Fan and Nie, Shen and Xue, Kaiwen and Cao, Yue and Li, Chongxuan and Su, Hang and Zhu, Jun},
-  booktitle = {CVPR},
-  year={2023}
-}
 ```
 
+## References
+
 This implementation is based on
-* [Extended Analytic-DPM](https://github.com/baofff/Extended-Analytic-DPM) (provide the FID reference statistics on CIFAR10 and CelebA 64x64)
+* [U-ViT](https://github.com/baofff/U-ViT) (provide the code base for experiments)
 * [guided-diffusion](https://github.com/openai/guided-diffusion) (provide the FID reference statistics on ImageNet)
 * [pytorch-fid](https://github.com/mseitzer/pytorch-fid) (provide the official implementation of FID to PyTorch)
 * [dpm-solver](https://github.com/LuChengTHU/dpm-solver) (provide the sampler)
