@@ -61,8 +61,7 @@ We use the [huggingface accelerate](https://github.com/huggingface/accelerate) l
 ```sh
 # the evaluation setting
 num_processes=1  # the number of gpus you have, e.g., 2
-eval_script=eval_t2i_discrete.py  
-            # eval_t2i_discrete.py: for models trained with train_t2i_discrete.py (i.e., text-to-image models on latent space)
+eval_script=eval_t2i_discrete.py  # for models trained with train_t2i_discrete.py (i.e., text-to-image models on latent space)
 config=configs/lmlp_f2.py  # the training configuration
 
 # launch evaluation
