@@ -37,9 +37,8 @@ We use the [huggingface accelerate](https://github.com/huggingface/accelerate) l
 ```sh
 # the training setting
 num_processes=2  # the number of gpus you have, e.g., 2
-train_script=train_t2i_discrete.py  # the train script, one of <train.py|train_ldm.py|train_ldm_discrete.py|train_t2i_discrete.py>
-                       # train_t2i_discrete.py: text-to-image training on latent space
-config=configs/f2.py  # the training configuration # you can change other hyperparameters by modifying the configuration file
+train_script=train_t2i_discrete.py # train_t2i_discrete.py: text-to-image training on latent space
+config=configs/f2.py  # the training configuration, you can change other hyperparameters by modifying the configuration file
 
 # launch training
 accelerate launch --multi_gpu --num_processes $num_processes --mixed_precision fp16 $train_script --config=$config
